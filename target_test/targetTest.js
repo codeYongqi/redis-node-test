@@ -69,4 +69,31 @@ const insertJsonData = async function insertJsonDataByString() {
   console.log(`average cost ${(cost)/10000 } thrillseconds`);
 }
 
-insertJsonData();
+async function fuzzySearchData(searchString) {
+  return new Promise((resolve, reject) => {
+    redisClient.ft_search(['idx:target',searchString], (err, result) => {
+      if (err) reject(err);
+      else resolve(result);
+    });
+  })
+}
+
+const searchJsonData = async function fuzzySerachJsonData() {
+  let cost = 0;
+
+  for(let i = 0; i < 5000; i++) {
+    console.log(i);
+
+    let start = performance.now();
+    const data = await fuzzySearchData('mario')
+    let end = performance.now();
+
+    cost += end - start;
+    console.log(data);
+  }
+  console.log(`it cost ${cost} thrillseconds`);
+  console.log(`average cost ${(cost)/5000 } thrillseconds`);
+}
+
+// insertJsonData();
+searchJsonData();
