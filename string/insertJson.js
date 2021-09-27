@@ -5,6 +5,7 @@ const util = require('util');
 
 redisClient.set = util.promisify(redisClient.set);
 redisClient.get = util.promisify(redisClient.get);
+redisClient.del = util.promisify(redisClient.del);
 
 const geneTargetData = function generateTargetDataByFaker() {
   let target = {};
@@ -21,32 +22,103 @@ const geneTargetData = function generateTargetDataByFaker() {
 }
 
 const insertJsonData = async function insertJsonDataByString() {
-  let start = performance.now();
+  let cost = 0;
 
-  for(let i = 250001; i <= 260001; i++) {
+  for(let i = 250001; i <= 260000; i++) {
     console.log(i);
     let data = geneTargetData();
-    // await redisClient.set(i, data);
-  }
 
-  let end = performance.now();
-  console.log(`it cost ${end - start} thrillseconds`);
+    let start = performance.now();
+    await redisClient.set(i, data);
+    let end = performance.now();
+    cost += end - start;
+  }
+  console.log(`it cost ${cost} thrillseconds`);
+  console.log(`average cost ${(cost)/10000 } thrillseconds`);
 }
 
 const findJsonData = async function findStringJsonData() {
-  let start = performance.now();
+  let cost = 0;
   for(let i = 250001; i <= 260000; i++) {
     console.log(i);
+    let start = performance.now();
     let data = await redisClient.get(i);
+    let end = performance.now();
+    cost += end - start;
     console.log(data);
   }
-  let end = performance.now();
-  console.log(`it cost ${end - start} thrillseconds`);
-  console.log(`average cost ${(end - start)/10000 } thrillseconds`);
+  console.log(`it cost ${cost} thrillseconds`);
+  console.log(`average cost ${(cost)/10000 } thrillseconds`);
+}
+
+const findJsonOneField = async function findOneFieldInJsonData() {
+  let cost = 0;
+  for(let i = 250001; i <= 260000; i++) {
+    console.log(i);
+    let start = performance.now();
+    let data = await redisClient.get(i);
+    data = JSON.parse(data).url;
+    let end = performance.now();
+    cost += end - start;
+    console.log(data);
+  }
+  console.log(`it cost ${cost} thrillseconds`);
+  console.log(`average cost ${(cost)/10000 } thrillseconds`);
+}
+
+async function updateField(i) {
+  return new Promise((reslove, reject) => {
+    redisClient.watch(i, (err) => {
+        if (err) reject(err);
+        redisClient.get(i, (err, res) => {
+          if (err) reject(err);
+          let data = JSON.parse(res);
+          data.url = faker.internet.url();
+          // data.url = 'test';
+          redisClient.multi()
+          .set(i, JSON.stringify(data))
+          .exec((err, reply) => {
+            if (err) reject(err);
+            reslove(reply);
+          })
+        })
+    })
+  })
+}
+
+const updateJson = async function updateOneFileInJson() {
+  let cost = 0;
+  for(let i = 250001; i <= 260000; i++) {
+    console.log(i);
+
+    let start = performance.now();
+    await updateField(i);
+    let end = performance.now();
+    cost += end - start;
+  }
+  console.log(`it cost ${cost} thrillseconds`);
+  console.log(`average cost ${(cost)/10000 } thrillseconds`);
+}
+
+const deleteJson = async function deleteJsonData() {
+  let cost = 0;
+  for(let i = 250001; i <= 260000; i++) {
+    console.log(i);
+
+    let start = performance.now();
+    await redisClient.del(i);
+    let end = performance.now();
+    cost += end - start;
+  }
+  console.log(`it cost ${cost} thrillseconds`);
+  console.log(`average cost ${(cost)/10000 } thrillseconds`);
 }
 
 // insertJsonData();
-findJsonData();
+// findJsonData();
+// findJsonOneField();
+// updateJson();
+ deleteJson();
 
 
 
