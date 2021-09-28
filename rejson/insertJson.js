@@ -5,6 +5,7 @@ const util = require('util')
 
 redisClient.json_set = util.promisify(redisClient.json_set);
 redisClient.json_get = util.promisify(redisClient.json_get);
+redisClient.del = util.promisify(redisClient.del);
 
 const geneTargetData = function generateTargetDataByFaker() {
   let target = {};
@@ -56,7 +57,6 @@ const del = async function insertJsonDataByString() {
 
   for(let i = 350001; i <= 360000; i++) {
     console.log(i);
-    let data = geneTargetData();
 
     let start = performance.now();
     await redisClient.del(i);
@@ -84,5 +84,5 @@ const updateJson = async function updateOneFileInJson() {
 // insertJsonData();
 // findJsonData();
 
-// del();
-updateJson();
+ del();
+// updateJson();
