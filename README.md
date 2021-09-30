@@ -64,9 +64,9 @@ it cost 1215.1603999510407 thrillseconds
 average cost 0.12151603999510407 thrillseconds
 
 ### delete 1w 
+it cost 1520.3293000645936 thrillseconds
+average cost 0.15203293000645934 thrillseconds
 
-it cost 1259.9622973799706 thrillseconds
-average cost 0.25199245947599413 thrillseconds
 
 146.46M
 260.11M
