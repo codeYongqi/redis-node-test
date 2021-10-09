@@ -68,6 +68,7 @@ it cost 1520.3293000645936 thrillseconds
 average cost 0.15203293000645934 thrillseconds
 
 
+
 146.46M
 260.11M
 
