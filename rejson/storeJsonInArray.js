@@ -26,7 +26,7 @@ const geneTargetData = function generateTargetDataByFaker() {
 const insertJsonData = async function insertJsonDataByString() {
   let cost = 0;
 
-  for(let i = 1; i <= 1000; i++) {
+  for(let i = 1; i <= 10000; i++) {
     console.log(i);
     let data = geneTargetData();
     let key = `target_arr: ${i}`
@@ -42,7 +42,7 @@ const insertJsonData = async function insertJsonDataByString() {
     cost += end - start;
   }
   console.log(`it cost ${cost} thrillseconds`);
-  console.log(`average cost ${(cost)/1000 } thrillseconds`);
+  console.log(`average cost ${(cost)/10000 } thrillseconds`);
 }
 
 const findJsonData = async function findStringJsonData() {
